@@ -28,22 +28,25 @@ Event.prototype.setStartTime=function(Time){
   this.endTime=Time;
 };
 Event.prototype.printEvent=function(){
-  return this.getTitle() + "    " + ;
+  return this.getTitle() + "    " +this.getDate()+" "+this.getStartTime()+"-"this.getEndTime();
 };
 Event.prototype.getTitle=function(){
   return this.title
 };
 Event.prototype.getStartTime=function(){
-  return timeTransform(this.startTime)
+  return timeTransform(this.startTime);
+};
+Event.prototype.getEndTime=function(){
+  return timeTransform(this.endTime);
 };
 function timeTransform(timeUTC){
-  var hour = this.displayTime().gethours();
+  var hour = this.displayTime().getHours();
   var morn = true;
   if (hour >= 12){
     morn = false;
     hour -= 12;
   }
-  return hour+":"+this.displayTime().getMinutes()+(morn ? "AM":"PM");
+  return hour+":"+this.displayTime().getMinutes()+(morn ? " AM":" PM");
 }
 Event.prototype.getDate=function(){
   var monthArray=["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -53,6 +56,3 @@ Event.prototype.getDate=function(){
 Event.prototype.getDescription=function(){
   return this.description;
 };
-function submitEvent(){
-  var form = document.getElementById("event-form");
-}
