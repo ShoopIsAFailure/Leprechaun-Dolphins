@@ -1,5 +1,5 @@
 
-function Event(tit, start, end, desc){
+function Event(tit, start, end, desc, tags){
   /*
   title should be simple enough: title of the Event
   time should be given as a UTC time.
@@ -8,6 +8,7 @@ function Event(tit, start, end, desc){
   this.startTime = start;
   this.description=desc;
   this.endTime=end;
+  this.tags=tags;
 }
 
 Event.prototype.displayTime=function(){
@@ -27,6 +28,9 @@ Event.prototype.setStartTime=function(Time){
 Event.prototype.setStartTime=function(Time){
   this.endTime=Time;
 };
+Event.prototype.setTags=function(tags){
+  this.tags=tags;
+};
 Event.prototype.printEvent=function(){
   return this.getTitle() + "    " +this.getDate()+" "+this.getStartTime()+"-"this.getEndTime();
 };
@@ -35,6 +39,9 @@ Event.prototype.getTitle=function(){
 };
 Event.prototype.getStartTime=function(){
   return timeTransform(this.startTime);
+};
+Event.prototype.getTags=functio(){
+  return this.tags;
 };
 Event.prototype.getEndTime=function(){
   return timeTransform(this.endTime);
