@@ -7,7 +7,8 @@ function submitEvent(){
     var startDate = new Date(info[date]+" "+info[start]).getTime();
     var endDate = new Date(info[date]+" "+info[end]).getTime();
     var newEvent = Event(info[title],startDate,endDate,info[desc],info[tags]);
-    localStorage.setItem(newEvent, info[title]+startDate);
+    MainDatabase.addEvent(newEvent);
+    MainDatabase.save();
 }
 function retrieveEvent(title, date,startTime){
   var searchTerm = title + new Date(title+" "+startTime).getTime();

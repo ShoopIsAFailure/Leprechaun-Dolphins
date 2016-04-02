@@ -1,14 +1,24 @@
 
 /**
-The event database holds all events 
+The event database holds all events
 @constructor
 @this {EventDatabase}
-@property {Array.<PastEvent>} _past Private. Those events that have already happend.
-@property {Array.<FutureEvent>} _present Private. Those events that are in the near future.
-@property {Array.<FutureEvent>} _future Private. Those events that are in the far future.
-@property {Array.<function>} _past_listeners Private. The listeners that care about the past.
-@property {Array.<function>} _present_listeners Private. The listeners that care about the present.
-@property {Array.<function>} _future_listeners Private. The listeners that care about the future.
+@property {Array.<PastEvent>} _past Private. Those events
+that have already happend.
+@property {Array.<FutureEvent>} _present Private. Those
+ events that are in the near future.
+@property {Array.<FutureEvent>} _future Private.
+Those events that are in the far future.
+@property {Array.<function>} _past_listeners Private.
+The listeners that care about the past.
+@property {Array.<function>} _present_listeners Private.
+The listeners that care about the present.
+@property {Array.<function>} _future_listeners Private.
+The listeners that care about the future.
+@property {Boolean} needsSaving Whether the Database
+actually needds to save.
+@property {Array.<Boolean>} whatNeedsSaving Indexed array of
+whatever we haven't yet saved.
 */
 function EventDatabase() {
   this._data = new Array(3);
@@ -16,6 +26,9 @@ function EventDatabase() {
   this.needsSaving = false;
   this.whatNeedsSaving = new Array(3);
   this._listeners = [[], [], []];
+  this.loadPast();
+  this.loadPresent();
+  this.loadFuture();
 }
 
 EventDatabase.PAST = 0;
@@ -31,6 +44,17 @@ EventDatabase.prototype.loadPast = function (callback) {
 };
 
 /**
+Adds an event to the event database and then sorts
+the database by start time
+@param {Event} event The event desired to be added.
+*/
+EventDatabase.prototype.addEvent=funcion(event){
+  this._data[EventDatabase.PRESENT].push(event);
+  this._data.sort(function(a,b){
+    return a.startTime-b.startTime;
+  });
+};
+/**
 Starts asynchronous loading of typed events
 @private
 @param {function} callback Callback function
@@ -38,14 +62,14 @@ Starts asynchronous loading of typed events
 */
 EventDatabase.prototype._loadGeneral = function (callback, type) {
   if (typeof callback !== "function" && callback)
-    throw new TypeError("Callback must be a function if defined");
+  throw new TypeError("Callback must be a function if defined");
   if (this._data[type]) {
     if (callback)
-      callback(this._data[type]);
+    callback(this._data[type]);
     return;
   }
   if (callback)
-    this._listeners[type].push(callback);
+  this._listeners[type].push(callback);
   var key = "__EventDatabase_" + this._names[type];
   if (window && window.localStorage) {
     this._loadedCallback({
@@ -84,19 +108,35 @@ calls all callbacks associated with past
 EventDatabase.prototype._loadedCallback = function (data, type) {
   var key = "__EventDatabase_" + this._names[type];
   if (data[key])
-    this._data[type] = data[key];
+  this._data[type] = data[key];
   else
-    this._data[type] = [];
+  this._data[type] = [];
 
   for (var i = 0; i < this._listeners[type].length; i++) {
     this._listeners[type][i](this._data[type]);
   }
 };
 
-/*
-ex
+/**
+Saves the database with newly added event(s).
 */
+EventDatabase.prototype.save=function(){
+  for(var i=0;i<3;i++){
+    var key = "__EventDatabase_" + this._names[i];
+    localStorage.setItem(key, this._data[i]);
+  }
+};
+
+/**
+Get the number of total past, present, and future events.
+@return {Number} The number of events stored.
+*/
+EventDatabase.prototype.numberOfEvents = function(){
+  var number = 0;
+  for(var i = 0; i < 3; i++){
+    number += this._data[i].length;
+  }
+  return number;
+};
+
 var MainDatabase = new EventDatabase();
-MainDatabase.loadPast(function (e) {
-  console.log(e);
-});
