@@ -1,13 +1,13 @@
 
-function Event(){
+function Event(tit, start, end, desc){
   /*
   title should be simple enough: title of the Event
   time should be given as a UTC time.
   */
-  this.title = "";
-  this.startTime = 0;
-  this.description="";
-  this.endTime=0;
+  this.title = tit;
+  this.startTime = start;
+  this.description=desc;
+  this.endTime=end;
 }
 
 Event.prototype.displayTime=function(){
