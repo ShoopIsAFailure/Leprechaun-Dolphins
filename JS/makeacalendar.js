@@ -1,4 +1,4 @@
-function eventFromLocalEvent(event){
+zfunction eventFromLocalEvent(event){
     return {
         title : event.title + ' ' + event.className,
         start : event.start,
